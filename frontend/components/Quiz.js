@@ -1,6 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux';
+import { fetchQuiz, postAnswer, selectAnswer } from '../state/action-creators';
 
-export default function Quiz(props) {
+
+export function Quiz(props) {
   return (
     <div id="wrapper">
       {
@@ -32,3 +35,8 @@ export default function Quiz(props) {
     </div>
   )
 }
+const mapStateToProps = state=>{
+  return {quiz:state.quiz, answerId: state.selectAnswer}
+}
+
+export default connect(mapStateToProps, {fetchQuiz, selectAnswer, postAnswer})(Quiz)
