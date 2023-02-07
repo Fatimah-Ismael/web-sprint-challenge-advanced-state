@@ -10,8 +10,8 @@ export function moveCounterClockwise(index) {
   return { type: MOVE_COUNTERCLOCKWISE, payload:index}
 }
 
-export function selectAnswer(answerId) { 
-  return { type: SET_SELECTED_ANSWER, payload: answerId}
+export function selectAnswer(answer) { 
+  return { type: SET_SELECTED_ANSWER, payload: answer}
 }
 
 export function setMessage(message) {
@@ -35,50 +35,46 @@ export function resetForm() {
 
 export function fetchQuiz() {
   return function (dispatch) {
-    dispatch(setQuiz);
+    dispatch(setQuiz(null));
 
     axios.get('http://localhost:9000/api/quiz/next')
       .then(res=>{
-        //console.log(res)
+        console.log(res)
+        dispatch(setQuiz(null))
         dispatch(setQuiz(res.data))
       })
       .catch((err)=>{
         console.log(err)
-      })
+      }, []);
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
     // On successful GET:
     // - Dispatch an action to send the obtained quiz to its state
   }
 }
-export function postAnswer() {
+export function postAnswer(payload) {
   return function (dispatch) {
-    axios.post('http://localhost:9000/api/quiz/answer')
-    .then(res=> {
+    axios.post('http://localhost:9000/api/quiz/answer', payload)
+    .then((res)=> {
       dispatch(selectAnswer(null))
       dispatch(setMessage(res.data.message))
       dispatch(fetchQuiz())
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
+    }, [])
+   
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
     // - Dispatch the fetching of the next quiz
   }
 }
-export function postQuiz(newQuiz) {
-  console.log(newQuiz.newQuestion)
+export function postQuiz(payload) {
+ // console.log(res.data)
   return function (dispatch) {
-    axios.post('http://localhost:9000/api/quiz/answer', {
-      questionText: newQuiz.newQuestion.trim(),
-      trueAnswerText: newQuiz.newTrueAnswer.trim(),
-      falseAnswerText: newQuiz.newFalseAnswer.trim(),
-    })
-    .then(res=>{
+    axios.post('http://localhost:9000/api/quiz/new', payload)
+    .then((res)=>{
+      console.log(res.data)
       dispatch(setMessage(`Congrats: "${res.data.question}" is a great question!`))
-      dispatch(resetForm())
-    })
+      dispatch(resetForm(true))
+    }, [])
     .catch((err)=>{
       console.log(err)
     })

@@ -24,6 +24,8 @@ const initialWheelState = 0
 const initialQuizState = null
 function quiz(state = initialQuizState, action) {
   switch (action.type){
+    case SET_QUIZ_INTO_STATE:
+      return action.payload
     default:
      return state;
    }
@@ -32,6 +34,8 @@ function quiz(state = initialQuizState, action) {
 const initialSelectedAnswerState = null
 function selectedAnswer(state = initialSelectedAnswerState, action) {
   switch (action.type){
+    case SET_SELECTED_ANSWER:
+      return action.payload
     default:
      return state;
    }
@@ -40,6 +44,8 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
 const initialMessageState = ''
 function infoMessage(state = initialMessageState, action) {
   switch (action.type){
+    case SET_INFO_MESSAGE:
+      return action.payload
     default:
      return state;
    }
@@ -51,10 +57,21 @@ const initialFormState = {
 }
 function form(state = initialFormState, action) {
   switch (action.type){
+    case RESET_FORM:
+      return {
+        ...state, 
+        newQuestion: '',
+        newTrueAnswer: '',
+        newFalseAnswer: '',
+      }
+      case INPUT_CHANGE:
+        return {
+          [action.name]: action.payload
+        }
     default:
      return state;
    }
 }
 
-const rootReducer = combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form })
-export default rootReducer;
+
+export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form })
