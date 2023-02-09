@@ -1,29 +1,39 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import * as actionCreators from '../state/action-creators'
+import { dispatch } from 'react';
 
 export function Form(props) {
-const inputChange = props.inputChange;
-const form = props.form;
-const postQuiz = props.postQuiz;
+  const disabled = true;
+  const { inputChange, form, postQuiz } = props;
+
+//const newQuestion = '';
+//const newTrueAnswer= '';
+//const newFalseAnswer= '';
+
 
   const onChange = evt => {
-    evt.preventDefault();
+   // evt.preventDefault();
     //console.log('value', evt.target.value)
-    //console.log('id', evt.target.id);
-    inputChange({[evt.target.id]: evt.target.value})
+    console.log('id', evt.target.id);
+    
+    inputChange({id:evt.target.id, value: evt.target.value});
   }
-
-  const onSubmit = evt => {
+//console.log(props.newQuestion)
+//console.log(newTrueAnswer)
+  const onSubmit = (evt) => {
     evt.preventDefault();
     //console.log('submit')
+   
     postQuiz(form);
+    //actionCreators.resetForm();
   }
-  /*const disabled= 
-    form.newQuestion.trim() &&
-    form.newTrueAnswer.trim() &&
-    form.newFalseAnswer.trim()
-*/
+  /*const disabled = 
+    props.newQuestion.trim().length>0 &&
+    props.newTrueAnswer &&
+    props.newFalseAnswer;
+    */
+
 
   return (
     <form id="form" onSubmit={onSubmit}>
@@ -31,13 +41,18 @@ const postQuiz = props.postQuiz;
       <input maxLength={50} onChange={onChange} id="newQuestion" value={form.newQuestion} placeholder="Enter question" />
       <input maxLength={50} onChange={onChange} id="newTrueAnswer" value={form.newTrueAnswer} placeholder="Enter true answer" />
       <input maxLength={50} onChange={onChange} id="newFalseAnswer" value={form.newFalseAnswer} placeholder="Enter false answer" />
-      <button id="submitNewQuizBtn" >Submit new quiz</button>
+      <button id="submitNewQuizBtn" 
+      disabled={form.newQuestion.trim().length>0 && form.newTrueAnswer.trim().length>0 && form.newFalseAnswer.trim().length>0 ? !disabled: disabled}>
+        Submit new quiz</button>
     </form>
   )
 }
 const mapStateToProps = state =>{
   //console.log(mapStateToProps)
-  return{form:state.form}
+  return{
+  
+  form: state.form,
+}
   
 }
 export default connect(mapStateToProps, actionCreators)(Form)
